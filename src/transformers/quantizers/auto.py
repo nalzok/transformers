@@ -23,6 +23,7 @@ from ..utils.quantization_config import (
     QuantizationConfigMixin,
     QuantizationMethod,
     QuantoConfig,
+    QuipSharpConfig,
 )
 from .quantizer_aqlm import AqlmHfQuantizer
 from .quantizer_awq import AwqQuantizer
@@ -30,6 +31,7 @@ from .quantizer_bnb_4bit import Bnb4BitHfQuantizer
 from .quantizer_bnb_8bit import Bnb8BitHfQuantizer
 from .quantizer_gptq import GptqHfQuantizer
 from .quantizer_quanto import QuantoHfQuantizer
+from .quantizer_quip_sharp import QuipSharpHfQuantizer
 
 
 AUTO_QUANTIZER_MAPPING = {
@@ -39,6 +41,7 @@ AUTO_QUANTIZER_MAPPING = {
     "gptq": GptqHfQuantizer,
     "aqlm": AqlmHfQuantizer,
     "quanto": QuantoHfQuantizer,
+    "quip-sharp": QuipSharpHfQuantizer,
 }
 
 AUTO_QUANTIZATION_CONFIG_MAPPING = {
@@ -48,6 +51,7 @@ AUTO_QUANTIZATION_CONFIG_MAPPING = {
     "gptq": GPTQConfig,
     "aqlm": AqlmConfig,
     "quanto": QuantoConfig,
+    "quip-sharp": QuipSharpConfig,
 }
 
 

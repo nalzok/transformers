@@ -132,6 +132,7 @@ _auto_gptq_available = _is_package_available("auto_gptq")
 # `importlib.metadata.version` doesn't work with `awq`
 _auto_awq_available = importlib.util.find_spec("awq") is not None
 _quanto_available = _is_package_available("quanto")
+_quip_sharp_available = _is_package_available("quip_sharp")
 _pandas_available = _is_package_available("pandas")
 _peft_available = _is_package_available("peft")
 _phonemizer_available = _is_package_available("phonemizer")
@@ -649,6 +650,10 @@ def is_apex_available():
 
 def is_aqlm_available():
     return _aqlm_available
+
+
+def is_quip_sharp_available():
+    return _quip_sharp_available
 
 
 def is_ninja_available():

@@ -40,6 +40,7 @@ class QuantizationMethod(str, Enum):
     AWQ = "awq"
     AQLM = "aqlm"
     QUANTO = "quanto"
+    QUIP_SHARP = "quip-sharp"
 
 
 class AWQLinearVersion(str, Enum):
@@ -878,3 +879,138 @@ class QuantoConfig(QuantizationConfigMixin):
             raise ValueError(f"Only support weights in {accepted_weights} but found {self.weights}")
         if self.activations not in accepted_activations:
             raise ValueError(f"Only support weights in {accepted_activations} but found {self.activations}")
+
+
+@dataclass
+class QuipSharpConfig(QuantizationConfigMixin):
+    """
+    This is a wrapper class about all possible attributes and features that you can play with a model that has been
+    loaded using `quip-sharp`.
+
+    Args:
+        codebook (`str`, *optional*, defaults to `"E8P12"`):
+            ???
+        codebook_version (`int`, *optional*, defaults to `1`):
+            ???
+        codesz (`int`, *optional*, defaults to `8`):
+            ???
+        fused (`bool`, *optional*, defaults to `True`):
+            ???
+        idx_dtype (`str`, *optional*, defaults to `"torch.int64"`):
+            ???
+        lora_rank (`int`, *optional*, defaults to `0`):
+            ???
+        model_version (`int`, *optional*, defaults to `1`):
+            ???
+        outlier_channel_split (`bool`, *optional*, defaults to `False`):
+            ???
+        packsz (`float`, *optional*, defaults to `4.0`):
+            ???
+        pack_out (`bool`, *optional*, defaults to `False`):
+            ???
+        rescale_WH (`bool`, *optional*, defaults to `False`):
+            ???
+        resid_scale_override (`float`, *optional*, defaults to `-1`):
+            ???
+        train_mode (`bool`, *optional*, defaults to `False`):
+            ???
+    """
+
+    def __init__(
+        self,
+        codebook: str = "E8P12",
+        codebook_version: int = 1,
+        codesz: int = 8,
+        fused: bool = True,
+        idx_dtype: str = "torch.int64",
+        lora_rank: int = 0,
+        model_version: int = 1,
+        outlier_channel_split: bool = False,
+        packsz: Union[int, float] = 4,
+        pack_out: bool = False,
+        rescale_WH: bool = False,
+        resid_scale_override: Union[int, float] = -1,
+        train_mode: bool = False,
+        **kwargs,
+    ):
+        self.quant_method = QuantizationMethod.QUIP_SHARP
+        self.codebook = codebook
+        self.codebook_version = codebook_version
+        self.codesz = codesz
+        self.fused = fused
+        self.idx_dtype = idx_dtype
+        self.lora_rank = lora_rank
+        self.model_version = model_version
+        self.outlier_channel_split = outlier_channel_split
+        self.packsz = packsz
+        self.pack_out = pack_out
+        self.rescale_WH = rescale_WH
+        self.resid_scale_override = resid_scale_override
+        self.train_mode = train_mode
+
+        self.post_init()
+
+    def post_init(self):
+        r"""
+        Safety checker that arguments are correct - also replaces some NoneType arguments with their default values.
+        """
+        if not isinstance(self.codebook, str):
+            raise ValueError("codebook must be a str")
+        if not isinstance(self.codebook_version, int):
+            raise ValueError("codebook_version must be a int")
+        if not isinstance(self.codesz, int):
+            raise ValueError("codesz must be a int")
+        if not isinstance(self.fused, bool):
+            raise ValueError("fused must be a bool")
+        if not isinstance(self.idx_dtype, str):
+            raise ValueError("idx_dtype must be a str")
+        if not isinstance(self.lora_rank, int):
+            raise ValueError("lora_rank must be a int")
+        if not isinstance(self.model_version, int):
+            raise ValueError("model_version must be a int")
+        if not isinstance(self.outlier_channel_split, bool):
+            raise ValueError("outlier_channel_split must be a bool")
+        if not isinstance(self.packsz, (int, float)):
+            raise ValueError("packsz must be numeric")
+        if not isinstance(self.pack_out, bool):
+            raise ValueError("pack_out must be bool")
+        if not isinstance(self.rescale_WH, bool):
+            raise ValueError("rescale_WH must be a bool")
+        if not isinstance(self.resid_scale_override, (int, float)):
+            raise ValueError("resid_scale_override must be numeric")
+        if not isinstance(self.train_mode, bool):
+            raise ValueError("train_mode must be a bool")
+
+        if self.codebook not in {"E8P12", "E8P12RVQ3B", "E8P12RVQ4B"}:
+            raise ValueError(f"Unsupported codebook: {self.codebook}")
+        if self.codebook_version != 1:
+            raise ValueError(f"Unsupported codebook version: {self.codebook_version}")
+        if self.codesz != 8:
+            raise ValueError(f"Unsupported codesz: {self.codesz}")
+        if not self.fused:
+            raise ValueError(f"Unsupported fused: {self.fused}")
+        if self.idx_dtype != "torch.int64":
+            raise ValueError(f"Unsupported idx_dtype: {self.idx_dtype}")
+        if self.lora_rank != 0:
+            raise ValueError(f"Unsupported lora_rank: {self.lora_rank}")
+        if self.model_version != 1:
+            raise ValueError(f"Unsupported model_version: {self.model_version}")
+        if self.outlier_channel_split:
+            raise ValueError(f"Unsupported outlier_channel_split: {self.outlier_channel_split}")
+        if self.packsz not in {2, 2.6666666666666665, 4}:
+            raise ValueError(f"Unsupported packsz: {self.packsz}")
+        if self.pack_out:
+            raise ValueError(f"Unsupported pack_out: {self.pack_out}")
+        if self.rescale_WH:
+            raise ValueError(f"Unsupported rescale_WH: {self.rescale_WH}")
+        if self.resid_scale_override <= 0 and self.resid_scale_override != -1:
+            raise ValueError(f"Unsupported resid_scale_override: {self.resid_scale_override}")
+        if self.train_mode:
+            raise ValueError(f"Unsupported train_mode: {self.train_mode}")
+
+    # helper method required for compatibility with the `quip-sharp` library
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+    def get(self, key, default=None):
+        return getattr(self, key, default)

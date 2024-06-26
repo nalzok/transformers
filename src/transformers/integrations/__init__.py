@@ -83,6 +83,7 @@ _import_structure = {
     ],
     "peft": ["PeftAdapterMixin"],
     "quanto": ["replace_with_quanto_layers"],
+    "quip_sharp": ["replace_with_quip_sharp_linear", "unpack_quip_sharp_fused"],
 }
 
 if TYPE_CHECKING:
@@ -152,6 +153,7 @@ if TYPE_CHECKING:
     )
     from .peft import PeftAdapterMixin
     from .quanto import replace_with_quanto_layers
+    from .quip_sharp import replace_with_quip_sharp_linear, unpack_quip_sharp_fused
 else:
     import sys
 

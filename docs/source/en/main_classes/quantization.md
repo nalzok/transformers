@@ -26,6 +26,10 @@ Learn how to quantize models in the [Quantization](../quantization) guide.
 
 </Tip>
 
+## QuipSharpConfig
+
+[[autodoc]] QuipSharpConfig
+
 ## QuantoConfig
 
 [[autodoc]] QuantoConfig

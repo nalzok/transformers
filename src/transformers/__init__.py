@@ -1100,7 +1100,14 @@ _import_structure = {
         "is_vision_available",
         "logging",
     ],
-    "utils.quantization_config": ["AqlmConfig", "AwqConfig", "BitsAndBytesConfig", "GPTQConfig", "QuantoConfig"],
+    "utils.quantization_config": [
+        "AqlmConfig",
+        "AwqConfig",
+        "BitsAndBytesConfig",
+        "GPTQConfig",
+        "QuantoConfig",
+        "QuipSharpConfig",
+    ],
 }
 
 # sentencepiece-backed objects
@@ -5921,7 +5928,7 @@ if TYPE_CHECKING:
     )
 
     # bitsandbytes config
-    from .utils.quantization_config import AqlmConfig, AwqConfig, BitsAndBytesConfig, GPTQConfig, QuantoConfig
+    from .utils.quantization_config import AqlmConfig, AwqConfig, BitsAndBytesConfig, GPTQConfig, QuantoConfig, QuipSharpConfig
 
     try:
         if not is_sentencepiece_available():
